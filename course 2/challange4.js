@@ -1,4 +1,4 @@
-(function quiz() {
+(function quiz(initScore) {
     function Question({ question, answers, correct }) {
         this.question = question;
         this.answers = answers;
@@ -15,6 +15,12 @@
     Question.prototype.checkCorrect = function(answer) {
         return answer - 1 === this.correct;
     };
+
+    function askRandomQuestion(questions) {
+        var qNum = Math.floor(Math.random() * questions.length);
+        questions[qNum].ask();
+        return qNum;
+    }
     
     var lang = new Question({
         question: 'What language is used in browsers?',
@@ -37,13 +43,33 @@
         correct: 1
     });
 
-    var questions = [lang, dogs];
+    var earth = new Question({
+        question: 'What is the form of the Earth?',
+        answers: [
+            'Spheric',
+            'Flat',
+            'Cube'
+        ],
+        correct: 0
+    });
 
-    function askRandomQuestion() {
-        var qNum = Math.floor(Math.random() * questions.length);
-        questions[qNum].ask();
-        return qNum;
+    var questions = [lang, dogs, earth];
+    var score = initScore || 0;
+    var questionNum = askRandomQuestion(questions);
+    var userAnswer = prompt('Enter your answer');
+
+    if (userAnswer === 'exit') {
+        console.log('Game over! Thanks for playing!');
+        return;
     }
+    2
+    if ( questions[questionNum].checkCorrect(userAnswer) ) { 
+        console.log('It\'s right answer'); 
+        score++; 
+    } else {
+        console.log('Sorry you\'re wrong');
+    } 
+    console.log('Your score is: ' + score);
 
-    console.log(questions[askRandomQuestion()].checkCorrect(prompt('Enter your answer')) ? 'Yes!' : 'No!');
+    quiz(score);
 })();
