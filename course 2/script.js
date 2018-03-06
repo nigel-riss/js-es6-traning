@@ -1,30 +1,20 @@
+var years = [1990, 1965, 1937, 2005, 1998];
 
-// Lecture: The this keyword
-
-// console.log(this);
-
-// calcAge(1984);
-
-// function calcAge(year) {
-//     console.log(2018 - year);
-//     console.log(this);
-// }
-
-var john = {
-    name: 'John',
-    yearOfBith: 1990,
-    calcAge: function(year) {
-        console.log(this);
-        console.log(2018 - this.yearOfBith);
+function arrCalc(arr, fn) {
+    var arrRes = [];
+    for (el of arr) {
+        arrRes.push(fn(el));
     }
+    return arrRes;
 }
 
-// john.calcAge();
-
-var mike = {
-    name: 'Mike',
-    yearOfBith: 1984
+function calcAge(el) {
+    return 2018 - el;
 }
 
-mike.calcAge = john.calcAge;
-mike.calcAge();
+function isFullAge(limit, el) {
+    return el >= limit;
+}
+
+var ages = arrCalc(years, calcAge);
+var fullJapan = arrCalc(ages, isFullAge.bind(this, 20));
