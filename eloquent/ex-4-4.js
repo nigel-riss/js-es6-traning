@@ -1,5 +1,5 @@
 // Deep comparson of objects
-// Compare if objects have same properties of same value
+// Check if objects have same properties of same value
 function deepEqual(valA, valB) {
     // check if both are objects
     if (typeof valA == 'object' 
