@@ -59,14 +59,6 @@ let first = new VillageState(
 );
 let next = first.move("Alice's House");
 
-// console.log(next.place);
-// console.log(next.parcels);
-// console.log(first.place);
-// console.log(first.parcels);
-
-// let object = Object.freeze({value: 5});
-// object.value = 10;
-// console.log(object.value);
 
 function runRobot(state, robot, memory) {
     for (let turn = 0;; turn++) {
@@ -106,7 +98,3 @@ VillageState.random = function(parcelCount = 5) {
 }
 
 runRobot(VillageState.random(), randomRobot);
-// var state = VillageState.random();
-// console.log(randomRobot(state));
-// console.log(randomRobot(state));
-// console.log(randomRobot(state));
