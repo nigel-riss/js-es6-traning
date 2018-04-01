@@ -70,7 +70,7 @@ function runRobot(state, robot, memory) {
     for (let turn = 0;; turn++) {
         if (state.parcels.length == 0) {
             console.log(`Done in ${turn} turns`);
-            return turn;
+            break;
         }
         let action = robot(state, memory);
         state = state.move(action.direction);
@@ -103,7 +103,7 @@ VillageState.random = function(parcelCount = 5) {
     return new VillageState("Post Office", parcels);
 }
 
-runRobot(VillageState.random(), randomRobot);
+// runRobot(VillageState.random(), randomRobot);
 // var state = VillageState.random();
 // console.log(randomRobot(state));
 // console.log(randomRobot(state));
@@ -152,3 +152,75 @@ function goalOrientedRobot({place, parcels}, route) {
 
 
 // Exercise 1. Measuring a robot
+function countTurns(state, robot, memory) {
+    for (let turn = 0;; turn++) {
+        if (state.parcels.length == 0) return turn;
+        let action = robot(state, memory);
+        state = state.move(action.direction);
+        memory = action.memory;
+    }
+}
+
+function compareRobots(robot1, memory1, robot2, memory2) {
+    let total1 = 0, total2 = 0;
+    let checks = 100;
+
+    for (let i = 0; i < checks; i++) {
+        let state = VillageState.random()
+        total1 += countTurns(state, robot1, memory1);
+        total2 += countTurns(state, robot2, memory2);
+    }
+
+    console.log(`Robot 1 average turns: ${total1 / checks} \nRobot 2 average turns: ${total2 / checks}`);
+}
+
+// compareRobots(routeRobot, [], goalOrientedRobot, []);
+
+// Exercise 2. Robot Efficiency
+function efficientRobot({place, parcels}, route) {
+    if (route.length == 0) {
+        let routes = [];
+        // Get all resonable routes
+        for (let parcel of parcels) {
+            if (parcel.place != place) {
+                routes.push(findRoute(roadGraph, place, parcel.place));
+            } else {
+                routes.push(findRoute(roadGraph, place, parcel.address));
+            }
+        }
+        // Find shortest route
+        route = routes.reduce((prev, curr) => {
+            return (prev.length < curr.length) ? prev : curr;
+        });
+    }
+    return {direction: route[0], memory: route.slice(1)};
+}
+
+function lazyRobot({place, parcels}, route) {
+    if (route.length == 0) {
+        // Describe a route for every parcel
+        let routes = parcels.map(parcel => {
+            if (parcel.place != place) {
+                return { route: findRoute(roadGraph, place, parcel.place),
+                    pickUp: true };
+            } else {
+                return { route: findRoute(roadGraph, place, parcel.address),
+                    pickUp: false };
+            }
+        });
+
+        // This determines the precedence a route gets when choosing.
+        // Route length counts negatively, routes that pick up a package
+        // get a small bonus.
+        function score({route, pickUp}) {
+            return (pickUp ? 0.5 : 0) - route.length;
+        }
+        route = routes.reduce((a, b) => score(a) > score(b) ? a : b).route;
+    }
+
+    return { direction: route[0], memory: route.slice(1) };
+}
+
+// runRobot(VillageState.random(), efficientRobot, []);
+
+compareRobots(efficientRobot, [], lazyRobot, []);
