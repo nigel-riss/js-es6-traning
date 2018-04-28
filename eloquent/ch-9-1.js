@@ -99,5 +99,54 @@ function getDate(string) {
 
 // console.log(/\d{1,2}-\d{1,2}/.exec('123-00'));
 
-console.log(/\D+/.exec("123 text"));
-console.log(/[^0-9]+/.exec("123 text"));
+// console.log(/\D+/.exec("123 text"));
+// console.log(/[^0-9]+/.exec("123 text"));
+
+
+// console.log(/cat/.test("concatenate"));
+// console.log(/\bcat\b/.test("concatenate"));
+
+let animalCount = /\b\d+ (pig|cow|chicken)s?\b/;
+// console.log(animalCount.test("15 pigs"));
+// console.log(animalCount.test("15 pigcows"));
+
+let anyNumber = /\b([01]+b|[\d(a-f|A-F)]+h|\d+)\b/;
+// console.log(anyNumber.exec("01010101"));
+
+//
+// replacing
+//
+
+// console.log("papa".replace("p", "m"));
+// console.log("papa".replace(/p/g, "m"));
+// console.log("Borobudur".replace(/[ou]/, "a"));
+// console.log("Borobudur".replace(/[ou]/g, "a"));
+
+
+// console.log("Liskov, Barbara\nMcCarthy, John\nWadler, Philip".replace(/(\w+), (\w+)/g, "$2 $1"));
+
+let s = "the cia and fbi";
+// console.log(s.replace(/\b(fbi|cia)\b/g, str => str.toUpperCase()));
+
+let stock = "1 lemon, 2 cabbages, and 101 eggs";
+function minusOne(match, amount, unit) {
+    amount = Number(amount) - 1;
+    if (amount == 1) { // the only one left, remove 's'
+        unit = unit.slice(0, unit.length - 1);
+    } else if (amount == 0) {
+        amount = "no";
+    }
+    return amount + " " + unit;
+}
+// console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
+
+function stripComments(code) {
+    // greedy
+    // return code.replace(/\/\/.*|\/\*[^]*\*\//g, "");
+    // nongreedy
+    return code.replace(/\/\/.*|\/\*[^]*?\*\//g, "");
+}
+
+console.log(stripComments("1 + /* 2 */3"));
+console.log(stripComments("x = 10; // ten!"));
+console.log(stripComments("1 /* a */ + /* b */ 1"));
